@@ -22,7 +22,10 @@ import com.gprotechnologies.gprodesktop.bean.AppInfo;
 import com.gprotechnologies.gprodesktop.utils.AppUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements AppRecycleViewAdapter.OnItemCLickListener {
 
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements AppRecycleViewAda
         setContentView(R.layout.activity_main);
         rcv = findViewById(R.id.rcv);
         rcv.setLayoutManager(new GridLayoutManager(this, 4));
+
         adapter = new AppRecycleViewAdapter(AppUtils.getAppList(this), this);
         rcv.setAdapter(adapter);
         adapter.setOnItemClickListener(this);
@@ -48,24 +52,29 @@ public class MainActivity extends AppCompatActivity implements AppRecycleViewAda
         if (appInfo.getPackageName().equals("com.android.settings")) {
             if (passwordView == null)
                 passwordView = LayoutInflater.from(this).inflate(R.layout.dialog_password, null);
-            if (passwordDialog == null)
-                passwordDialog = new AlertDialog.Builder(this)
-                        .setView(passwordView)
-                        .setTitle("Please enter setting password")
-                        .setNegativeButton("cancel", null)
-                        .setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                String password = ((EditText) passwordView.findViewById(R.id.et_setting_password)).getText().toString();
-                                if(password.equals("gproadmin")){
-                                    startApp(appInfo);
-                                }
-                            }
-                        }).create();
+            if (passwordDialog == null) {
+                createDialog(appInfo);
+            }
             passwordDialog.show();
             return;
         }
         startApp(appInfo);
+    }
+
+    private void createDialog(final AppInfo appInfo) {
+        passwordDialog = new AlertDialog.Builder(this)
+                .setView(passwordView)
+                .setTitle("Please enter setting password")
+                .setNegativeButton("cancel", null)
+                .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String password = ((EditText) passwordView.findViewById(R.id.et_setting_password)).getText().toString();
+                        if(password.equals("gproadmin")){
+                            startApp(appInfo);
+                        }
+                    }
+                }).create();
     }
 
     private void startApp(AppInfo appInfo) {
