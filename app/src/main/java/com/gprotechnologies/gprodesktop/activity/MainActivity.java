@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.gprotechnologies.gprodesktop.R;
 import com.gprotechnologies.gprodesktop.adapter.AppRecycleViewAdapter;
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements AppRecycleViewAda
 
     @Override
     public void onItemClick(final AppInfo appInfo) {
-        if (appInfo.getPackageName().equals("com.android.settings")) {
+        if (appInfo.getPackageName().matches("(.*setting$)|(.*rk$)")) {
             if (passwordView == null)
                 passwordView = LayoutInflater.from(this).inflate(R.layout.dialog_password, null);
             if (passwordDialog == null) {
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements AppRecycleViewAda
     private void createDialog(final AppInfo appInfo) {
         passwordDialog = new AlertDialog.Builder(this)
                 .setView(passwordView)
-                .setTitle("Please enter setting password")
+                .setTitle("Please enter password")
                 .setNegativeButton("cancel", null)
                 .setPositiveButton("ok", new DialogInterface.OnClickListener() {
                     @Override
@@ -72,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements AppRecycleViewAda
                         String password = ((EditText) passwordView.findViewById(R.id.et_setting_password)).getText().toString();
                         if(password.equals("gproadmin")){
                             startApp(appInfo);
+                        }else {
+                            Toast.makeText(MainActivity.this, "password error", Toast.LENGTH_LONG).show();
                         }
                     }
                 }).create();

@@ -38,7 +38,7 @@ public class AppUtils {
                 continue;
             }
             //过滤应用
-            if (!packName.matches("(com.gpro\\w*.\\w*.\\w*)|(com.android.settings)"))
+            if (!packName.matches("(com.gpro\\w*.\\w*.\\w*)|(com.android.settings)|(com.android.rk)"))
                 continue;
             AppInfo mInfo = new AppInfo();
             mInfo.setIco(info.activityInfo.applicationInfo.loadIcon(pm));
