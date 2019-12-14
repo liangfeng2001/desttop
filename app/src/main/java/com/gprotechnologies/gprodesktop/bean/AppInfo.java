@@ -4,19 +4,11 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 
 public class AppInfo {
-    @Override
-    public String toString() {
-        return "AppInfo{" +
-                "packageName='" + packageName + '\'' +
-                ", ico=" + ico +
-                ", Name='" + Name + '\'' +
-                ", intent=" + intent +
-                '}';
-    }
+
 
     private String packageName; //包名
     private Drawable ico;       //图标
-    private String Name;        //应用标签
+    private String name;        //应用标签
     private Intent intent;     //启动应用程序的Intent ，一般是Action为Main和Category为Lancher的Activity
  
     public Intent getIntent() {
@@ -45,10 +37,10 @@ public class AppInfo {
     }
  
     public String getName() {
-        return Name;
+        return name;
     }
  
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 }

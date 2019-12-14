@@ -5,12 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,12 +17,6 @@ import com.gprotechnologies.gprodesktop.R;
 import com.gprotechnologies.gprodesktop.adapter.AppRecycleViewAdapter;
 import com.gprotechnologies.gprodesktop.bean.AppInfo;
 import com.gprotechnologies.gprodesktop.utils.AppUtils;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements AppRecycleViewAdapter.OnItemCLickListener {
 
@@ -50,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements AppRecycleViewAda
 
     @Override
     public void onItemClick(final AppInfo appInfo) {
-        if (appInfo.getPackageName().matches("(.*setting$)|(.*rk$)")) {
+        if (appInfo.getPackageName().matches("(.*settings$)|(.*rk$)")) {
             if (passwordView == null)
                 passwordView = LayoutInflater.from(this).inflate(R.layout.dialog_password, null);
             if (passwordDialog == null) {

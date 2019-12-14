@@ -11,10 +11,8 @@ import com.gprotechnologies.gprodesktop.bean.AppInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @Description
@@ -31,8 +29,8 @@ public class AppUtils {
         Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
         mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         List<ResolveInfo> activities = pm.queryIntentActivities(mainIntent, 0);
-        for (ResolveInfo info : activities) {
-            String packName = info.activityInfo.packageName;
+        for (ResolveInfo packageInfo : activities) {
+            String packName = packageInfo.activityInfo.packageName;
             Log.e(TAG, "getAppList: " + packName);
             if (packName.equals(context.getPackageName())) {
                 continue;
@@ -41,13 +39,13 @@ public class AppUtils {
             if (!packName.matches("(com.gpro\\w*.\\w*.\\w*)|(com.android.settings)|(com.android.rk)"))
                 continue;
             AppInfo mInfo = new AppInfo();
-            mInfo.setIco(info.activityInfo.applicationInfo.loadIcon(pm));
-            mInfo.setName(info.activityInfo.applicationInfo.loadLabel(pm).toString());
+            mInfo.setIco(packageInfo.activityInfo.applicationInfo.loadIcon(pm));
+            mInfo.setName(packageInfo.activityInfo.applicationInfo.loadLabel(pm).toString());
             mInfo.setPackageName(packName);
             // 为应用程序的启动Activity 准备Intent
             Intent launchIntent = new Intent();
             launchIntent.setComponent(new ComponentName(packName,
-                    info.activityInfo.name));
+                    packageInfo.activityInfo.name));
             mInfo.setIntent(launchIntent);
             map.put(packName, mInfo);
         }
