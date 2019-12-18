@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.gprotechnologies.gprodesktop.R;
 import com.gprotechnologies.gprodesktop.adapter.AppRecycleViewAdapter;
 import com.gprotechnologies.gprodesktop.bean.AppInfo;
+import com.gprotechnologies.gprodesktop.fragment.AppSelectDialogFragment;
 import com.gprotechnologies.gprodesktop.utils.AppUtils;
 
 public class MainActivity extends AppCompatActivity implements AppRecycleViewAdapter.OnItemCLickListener {
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements AppRecycleViewAda
         rcv = findViewById(R.id.rcv);
         rcv.setLayoutManager(new GridLayoutManager(this, 4));
 
-        adapter = new AppRecycleViewAdapter(AppUtils.getAppList(this), this);
+        adapter = new AppRecycleViewAdapter(AppUtils.getAppList(this,"(com.gpro\\w*.\\w*.\\w*)|(com.android.settings)|(com.android.rk)"), this);
         rcv.setAdapter(adapter);
         adapter.setOnItemClickListener(this);
     }
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements AppRecycleViewAda
             passwordDialog.show();
             return;
         }
-        startApp(appInfo);
+        AppUtils.openApp(MainActivity.this,appInfo);
     }
 
     private void createDialog(final AppInfo appInfo) {
@@ -62,22 +63,18 @@ public class MainActivity extends AppCompatActivity implements AppRecycleViewAda
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String password = ((EditText) passwordView.findViewById(R.id.et_setting_password)).getText().toString();
-                        if(password.equals("gproadmin")){
-                            startApp(appInfo);
+                        if("gproadmin".equals(password)){
+                            AppUtils.openApp(MainActivity.this,appInfo);
+                        }else if("ekek".equals(password)){
+                            AppSelectDialogFragment.show(MainActivity.this);
                         }else {
                             Toast.makeText(MainActivity.this, "password error", Toast.LENGTH_LONG).show();
                         }
+                        ((EditText) passwordView.findViewById(R.id.et_setting_password)).setText("");
                     }
                 }).create();
     }
 
-    private void startApp(AppInfo appInfo) {
-        Intent intent = getPackageManager().getLaunchIntentForPackage(appInfo.getPackageName());
-        if (intent != null) {
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        }
-    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

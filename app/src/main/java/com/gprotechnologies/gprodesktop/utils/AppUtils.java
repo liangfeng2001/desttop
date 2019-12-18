@@ -23,7 +23,7 @@ public class AppUtils {
 
     private static final String TAG = AppUtils.class.getSimpleName();
 
-    public static List<AppInfo> getAppList(Context context) {
+    public static List<AppInfo> getAppList(Context context,String reg) {
         Map<String, AppInfo> map = new HashMap<>();
         PackageManager pm = context.getPackageManager();
         Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
@@ -36,7 +36,7 @@ public class AppUtils {
                 continue;
             }
             //过滤应用
-            if (!packName.matches("(com.gpro\\w*.\\w*.\\w*)|(com.android.settings)|(com.android.rk)"))
+            if (!packName.matches(reg))
                 continue;
             AppInfo mInfo = new AppInfo();
             mInfo.setIco(packageInfo.activityInfo.applicationInfo.loadIcon(pm));
@@ -54,5 +54,13 @@ public class AppUtils {
             list.add(stringAppInfoEntry.getValue());
         }
         return list;
+    }
+
+    public static void openApp(Context context, AppInfo appInfo) {
+        Intent intent = context.getPackageManager().getLaunchIntentForPackage(appInfo.getPackageName());
+        if (intent != null) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
     }
 }

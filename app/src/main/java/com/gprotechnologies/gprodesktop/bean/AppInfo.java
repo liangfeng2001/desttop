@@ -10,7 +10,12 @@ public class AppInfo {
     private Drawable ico;       //图标
     private String name;        //应用标签
     private Intent intent;     //启动应用程序的Intent ，一般是Action为Main和Category为Lancher的Activity
- 
+
+    @Override
+    public String toString() {
+        return name;
+    }
+
     public Intent getIntent() {
         return intent;
     }
