@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="BaseThemeLight" parent="@android:style/Theme.Holo.Light.NoActionBar">
+        <item name="appSelectableItemBackground">?android:attr/selectableItemBackground</item>
+        <item name="android:actionMenuTextColor">@android:color/white</item>
+    </style>
+
+    <style name="AppThemeLight" parent="BaseThemeLight">
+        <item name="android:windowShowWallpaper">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textColorSecondary">#d3d3d3</item>
+        <item name="android:textColorTertiary">#d3d3d3</item>
+
+        <item name="searchColor">@android:color/black</item>
+        <item name="resultColor">@android:color/black</item>
+        <item name="resultShadowColor">#3f000000</item>
+        <item name="listBackgroundColor">@android:color/white</item>
+        <item name="searchBackgroundColor">@android:color/white</item>
+        <item name="searchBackgroundOutline">@android:color/transparent</item>
+        <item name="textShadowRadius">0</item>
+    </style>
+
+</resources>

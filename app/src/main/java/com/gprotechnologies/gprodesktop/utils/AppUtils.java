@@ -1,12 +1,20 @@
 package com.gprotechnologies.gprodesktop.utils;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Rect;
+import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
+import com.gprotechnologies.gprodesktop.R;
 import com.gprotechnologies.gprodesktop.bean.AppInfo;
 
 import java.util.ArrayList;
@@ -23,7 +31,7 @@ public class AppUtils {
 
     private static final String TAG = AppUtils.class.getSimpleName();
 
-    public static List<AppInfo> getAppList(Context context,String reg) {
+    public static List<AppInfo> getAppList(Context context, String reg) {
         Map<String, AppInfo> map = new HashMap<>();
         PackageManager pm = context.getPackageManager();
         Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
@@ -43,9 +51,10 @@ public class AppUtils {
             mInfo.setName(packageInfo.activityInfo.applicationInfo.loadLabel(pm).toString());
             mInfo.setPackageName(packName);
             // 为应用程序的启动Activity 准备Intent
-            Intent launchIntent = new Intent();
-            launchIntent.setComponent(new ComponentName(packName,
-                    packageInfo.activityInfo.name));
+            Intent launchIntent = new Intent(Intent.ACTION_MAIN);
+            launchIntent.setComponent(new ComponentName(packName, packageInfo.activityInfo.name));
+            launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+            launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             mInfo.setIntent(launchIntent);
             map.put(packName, mInfo);
         }
@@ -56,11 +65,10 @@ public class AppUtils {
         return list;
     }
 
-    public static void openApp(Context context, AppInfo appInfo) {
-        Intent intent = context.getPackageManager().getLaunchIntentForPackage(appInfo.getPackageName());
-        if (intent != null) {
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
-        }
+
+    public static void launchApp(Context context, AppInfo appInfo) {
+        context.startActivity(appInfo.getIntent());
     }
+
+
 }

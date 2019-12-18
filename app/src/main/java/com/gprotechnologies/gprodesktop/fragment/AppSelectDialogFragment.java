@@ -1,8 +1,6 @@
 package com.gprotechnologies.gprodesktop.fragment;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,13 +8,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 
-import com.gprotechnologies.gprodesktop.R;
 import com.gprotechnologies.gprodesktop.activity.MainActivity;
 import com.gprotechnologies.gprodesktop.bean.AppInfo;
 import com.gprotechnologies.gprodesktop.utils.AppUtils;
@@ -38,7 +33,7 @@ public class AppSelectDialogFragment extends DialogFragment {
     private static AppSelectDialogFragment appSelectDialogFragment = new AppSelectDialogFragment();;
 
     public static void show(MainActivity mainActivity) {
-        appSelectDialogFragment.show(mainActivity.getSupportFragmentManager(), "appSelectDialog");
+        appSelectDialogFragment.show(mainActivity.getFragmentManager(), "appSelectDialog");
     }
 
 
@@ -57,7 +52,7 @@ public class AppSelectDialogFragment extends DialogFragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AppUtils.openApp(getActivity(),appList.get(position));
+                AppUtils.launchApp(getActivity(),appList.get(position));
             }
         });
         return listView;

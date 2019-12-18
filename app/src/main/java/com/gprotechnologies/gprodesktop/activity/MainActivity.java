@@ -5,8 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -20,7 +20,7 @@ import com.gprotechnologies.gprodesktop.bean.AppInfo;
 import com.gprotechnologies.gprodesktop.fragment.AppSelectDialogFragment;
 import com.gprotechnologies.gprodesktop.utils.AppUtils;
 
-public class MainActivity extends AppCompatActivity implements AppRecycleViewAdapter.OnItemCLickListener {
+public class MainActivity extends Activity implements AppRecycleViewAdapter.OnItemCLickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private RecyclerView rcv;
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements AppRecycleViewAda
             passwordDialog.show();
             return;
         }
-        AppUtils.openApp(MainActivity.this,appInfo);
+        AppUtils.launchApp(MainActivity.this,appInfo);
     }
 
     private void createDialog(final AppInfo appInfo) {
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements AppRecycleViewAda
                     public void onClick(DialogInterface dialog, int which) {
                         String password = ((EditText) passwordView.findViewById(R.id.et_setting_password)).getText().toString();
                         if("gproadmin".equals(password)){
-                            AppUtils.openApp(MainActivity.this,appInfo);
+                            AppUtils.launchApp(MainActivity.this,appInfo);
                         }else if("ekek1234567890".equals(password)){
                             AppSelectDialogFragment.show(MainActivity.this);
                         }else {
