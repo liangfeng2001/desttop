@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements AppRecycleViewAda
                         String password = ((EditText) passwordView.findViewById(R.id.et_setting_password)).getText().toString();
                         if("gproadmin".equals(password)){
                             AppUtils.openApp(MainActivity.this,appInfo);
-                        }else if("ekek".equals(password)){
+                        }else if("ekek1234567890".equals(password)){
                             AppSelectDialogFragment.show(MainActivity.this);
                         }else {
                             Toast.makeText(MainActivity.this, "password error", Toast.LENGTH_LONG).show();
