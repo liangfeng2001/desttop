@@ -44,8 +44,9 @@ public class AppUtils {
                 continue;
             }
             //过滤应用
-            if (!packName.matches(reg))
-                continue;
+            if (null != reg)
+                if (!packName.matches(reg))
+                    continue;
             AppInfo mInfo = new AppInfo();
             mInfo.setIco(packageInfo.activityInfo.applicationInfo.loadIcon(pm));
             mInfo.setName(packageInfo.activityInfo.applicationInfo.loadLabel(pm).toString());

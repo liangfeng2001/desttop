@@ -35,7 +35,12 @@ public class MainActivity extends Activity implements AppRecycleViewAdapter.OnIt
         rcv = findViewById(R.id.rcv);
         rcv.setLayoutManager(new GridLayoutManager(this, 4));
 
-        adapter = new AppRecycleViewAdapter(AppUtils.getAppList(this,"(com.gpro\\w*.\\w*.\\w*)|(com.android.settings)|(com.android.rk)"), this);
+        initAdapter("(com.gpro\\w*.\\w*.\\w*)|(com.android.settings)|(com.android.rk)");
+
+    }
+
+    private void initAdapter(String reg) {
+        adapter = new AppRecycleViewAdapter(AppUtils.getAppList(this,reg), this);
         rcv.setAdapter(adapter);
         adapter.setOnItemClickListener(this);
     }
@@ -66,7 +71,9 @@ public class MainActivity extends Activity implements AppRecycleViewAdapter.OnIt
                         if("gproadmin".equals(password)){
                             AppUtils.launchApp(MainActivity.this,appInfo);
                         }else if("ekek1234567890".equals(password)){
-                            AppSelectDialogFragment.show(MainActivity.this);
+                            adapter = new AppRecycleViewAdapter(AppUtils.getAppList(MainActivity.this,null), MainActivity.this);
+                            rcv.setAdapter(adapter);
+                            adapter.setOnItemClickListener(MainActivity.this);
                         }else {
                             Toast.makeText(MainActivity.this, "password error", Toast.LENGTH_LONG).show();
                         }
