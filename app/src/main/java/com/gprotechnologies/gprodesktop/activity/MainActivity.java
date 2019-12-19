@@ -22,11 +22,12 @@ import com.gprotechnologies.gprodesktop.utils.AppUtils;
 
 public class MainActivity extends Activity implements AppRecycleViewAdapter.OnItemCLickListener {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
     private RecyclerView rcv;
     private AppRecycleViewAdapter adapter;
     private View passwordView;
     private AlertDialog passwordDialog;
+
+    private static String passwordRegApp = "(.*settings$)|(.*rk$)";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,23 +41,24 @@ public class MainActivity extends Activity implements AppRecycleViewAdapter.OnIt
     }
 
     private void initAdapter(String reg) {
-        adapter = new AppRecycleViewAdapter(AppUtils.getAppList(this,reg), this);
+        adapter = new AppRecycleViewAdapter(AppUtils.getAppList(this, reg), this);
         rcv.setAdapter(adapter);
         adapter.setOnItemClickListener(this);
     }
 
     @Override
     public void onItemClick(final AppInfo appInfo) {
-        if (appInfo.getPackageName().matches("(.*settings$)|(.*rk$)")) {
-            if (passwordView == null)
-                passwordView = LayoutInflater.from(this).inflate(R.layout.dialog_password, null);
-            if (passwordDialog == null) {
-                createDialog(appInfo);
+        if (passwordRegApp != null)
+            if (appInfo.getPackageName().matches(passwordRegApp)) {
+                if (passwordView == null)
+                    passwordView = LayoutInflater.from(this).inflate(R.layout.dialog_password, null);
+                if (passwordDialog == null) {
+                    createDialog(appInfo);
+                }
+                passwordDialog.show();
+                return;
             }
-            passwordDialog.show();
-            return;
-        }
-        AppUtils.launchApp(MainActivity.this,appInfo);
+        AppUtils.launchApp(MainActivity.this, appInfo);
     }
 
     private void createDialog(final AppInfo appInfo) {
@@ -68,11 +70,12 @@ public class MainActivity extends Activity implements AppRecycleViewAdapter.OnIt
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String password = ((EditText) passwordView.findViewById(R.id.et_setting_password)).getText().toString();
-                        if("gproadmin".equals(password)){
-                            AppUtils.launchApp(MainActivity.this,appInfo);
-                        }else if("ekek1234567890".equals(password)){
+                        if ("gproadmin".equals(password)) {
+                            AppUtils.launchApp(MainActivity.this, appInfo);
+                        } else if ("ekek1234567890".equals(password)) {
+                            passwordRegApp = null;
                             initAdapter(null);
-                        }else {
+                        } else {
                             Toast.makeText(MainActivity.this, "password error", Toast.LENGTH_LONG).show();
                         }
                         ((EditText) passwordView.findViewById(R.id.et_setting_password)).setText("");
@@ -85,7 +88,7 @@ public class MainActivity extends Activity implements AppRecycleViewAdapter.OnIt
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
             return true;
-        }else {
+        } else {
             return super.onKeyDown(keyCode, event);
         }
     }
