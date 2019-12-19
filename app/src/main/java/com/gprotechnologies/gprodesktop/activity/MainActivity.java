@@ -71,9 +71,7 @@ public class MainActivity extends Activity implements AppRecycleViewAdapter.OnIt
                         if("gproadmin".equals(password)){
                             AppUtils.launchApp(MainActivity.this,appInfo);
                         }else if("ekek1234567890".equals(password)){
-                            adapter = new AppRecycleViewAdapter(AppUtils.getAppList(MainActivity.this,null), MainActivity.this);
-                            rcv.setAdapter(adapter);
-                            adapter.setOnItemClickListener(MainActivity.this);
+                            initAdapter(null);
                         }else {
                             Toast.makeText(MainActivity.this, "password error", Toast.LENGTH_LONG).show();
                         }
