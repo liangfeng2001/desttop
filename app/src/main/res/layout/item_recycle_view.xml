@@ -7,11 +7,26 @@
     android:orientation="vertical"
     tools:ignore="UseCompoundDrawables">
 
-    <ImageView
-        android:layout_margin="5dp"
-        android:id="@+id/iv_app_img"
+    <RelativeLayout
         android:layout_width="70dp"
-        android:layout_height="70dp" />
+        android:layout_height="70dp">
+
+        <ImageView
+            android:layout_margin="5dp"
+            android:id="@+id/iv_app_img"
+            android:layout_width="70dp"
+            android:layout_height="70dp" />
+
+        <ImageView
+            android:id="@+id/iv_del_img"
+            android:visibility="invisible"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:background="@mipmap/cross"
+            android:layout_width="30dp"
+            android:layout_height="30dp"/>
+    </RelativeLayout>
+
     <TextView
         android:padding="8dp"
         android:textSize="24sp"

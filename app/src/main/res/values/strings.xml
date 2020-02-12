@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">GproDesktop</string>
+    <string name="ek_password">ekek1234567890</string>
+    <string name="gpro_password">gproadmin</string>
+    <string name="dialog_title">Please enter password</string>
+    <string name="dialog_btn_cancel">cancel</string>
+    <string name="dialog_btn_ok">ok</string>
+    <string name="dialog_pwd_error">password error</string>
 </resources>

@@ -71,5 +71,4 @@ public class AppUtils {
         context.startActivity(appInfo.getIntent());
     }
 
-
 }

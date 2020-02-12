@@ -26,6 +26,7 @@ public class AppRecycleViewAdapter extends RecyclerView.Adapter<AppRecycleViewAd
     List<AppInfo> appInfos;
     Context context;
     OnItemCLickListener onItemCLickListener;
+    boolean enableUninstall = false;
 
     public AppRecycleViewAdapter(List<AppInfo> appInfos, MainActivity mainActivity) {
         this.appInfos = appInfos;
@@ -52,6 +53,21 @@ public class AppRecycleViewAdapter extends RecyclerView.Adapter<AppRecycleViewAd
                 }
             }
         });
+
+        if (enableUninstall) {
+            holder.iv_del_img.setVisibility(View.VISIBLE);
+        } else {
+            holder.iv_del_img.setVisibility(View.INVISIBLE);
+        }
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                enableUninstall = !enableUninstall;
+                notifyDataSetChanged();
+                return true;
+            }
+        });
     }
 
     @Override
@@ -63,19 +79,30 @@ public class AppRecycleViewAdapter extends RecyclerView.Adapter<AppRecycleViewAd
         this.onItemCLickListener = listener;
     }
 
+    public void initAppList(List<AppInfo> appList) {
+        this.appInfos = appList;
+        notifyDataSetChanged();
+    }
+
     public interface OnItemCLickListener {
         void onItemClick(AppInfo appInfo);
+    }
+
+    public boolean isEnableUninstall() {
+        return enableUninstall;
     }
 
     class MyHolder extends RecyclerView.ViewHolder {
 
         TextView tv_app_name;
         ImageView iv_app_img;
+        ImageView iv_del_img;
 
         public MyHolder(@NonNull View itemView) {
             super(itemView);
             tv_app_name = itemView.findViewById(R.id.tv_app_name);
             iv_app_img = itemView.findViewById(R.id.iv_app_img);
+            iv_del_img = itemView.findViewById(R.id.iv_del_img);
         }
     }
 }

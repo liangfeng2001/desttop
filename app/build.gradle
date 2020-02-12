@@ -7,8 +7,8 @@ android {
         applicationId "com.gprotechnologies.gprodesktop"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 13
-        versionName "1.12"
+        versionCode 14
+        versionName "1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -41,5 +41,6 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.hierynomus/smbj
 //    compile group: 'com.hierynomus', name: 'smbj', version: '0.9.1'
+    implementation 'org.greenrobot:eventbus:3.0.0'
 
 }
