@@ -9,14 +9,18 @@ import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.core.content.FileProvider;
+
 import com.gprotechnologies.gprodesktop.R;
 import com.gprotechnologies.gprodesktop.bean.AppInfo;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -69,6 +73,14 @@ public class AppUtils {
 
     public static void launchApp(Context context, AppInfo appInfo) {
         context.startActivity(appInfo.getIntent());
+    }
+
+    public static void installApk(Context context, File downloadApk) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Uri uri = Uri.fromFile(downloadApk);
+        intent.setDataAndType(uri, "application/vnd.android.package-archive");
+        context.startActivity(intent);
     }
 
 }

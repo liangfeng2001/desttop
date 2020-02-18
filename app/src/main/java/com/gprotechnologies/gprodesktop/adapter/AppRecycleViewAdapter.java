@@ -36,7 +36,7 @@ public class AppRecycleViewAdapter extends RecyclerView.Adapter<AppRecycleViewAd
     @NonNull
     @Override
     public MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new MyHolder(LayoutInflater.from(context).inflate(R.layout.item_recycle_view, null));
+        return new MyHolder(LayoutInflater.from(context).inflate(R.layout.item_app_icon, null));
     }
 
     @Override

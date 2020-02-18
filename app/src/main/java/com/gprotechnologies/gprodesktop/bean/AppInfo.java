@@ -11,6 +11,16 @@ public class AppInfo {
     private String name;        //应用标签
     private Intent intent;     //启动应用程序的Intent ，一般是Action为Main和Category为Lancher的Activity
 
+    public AppInfo() {
+    }
+
+    public AppInfo(String packageName, Drawable ico, String name, Intent intent) {
+        this.packageName = packageName;
+        this.ico = ico;
+        this.name = name;
+        this.intent = intent;
+    }
+
     @Override
     public String toString() {
         return name;

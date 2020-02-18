@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
@@ -23,16 +22,17 @@ import com.gprotechnologies.gprodesktop.adapter.AppRecycleViewAdapter;
 import com.gprotechnologies.gprodesktop.bean.AppInfo;
 import com.gprotechnologies.gprodesktop.event.MessageEvent;
 import com.gprotechnologies.gprodesktop.utils.AppUtils;
+import com.gprotechnologies.gprodesktop.utils.ShapUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-public class MainActivity extends Activity implements AppRecycleViewAdapter.OnItemCLickListener {
+import java.util.List;
 
-    public static final String PWD_HIDE = "hide";
-    public static final String PWD_SHOW = "show";
-    public static final String SHOW_APP_PACKAGE = "(com.gpro\\w*.\\w*.\\w*)|(com.android.settings)|(com.android.rk)";
+import static com.gprotechnologies.gprodesktop.consts.AppConst.*;
+
+public class MainActivity extends Activity implements AppRecycleViewAdapter.OnItemCLickListener {
 
     private RecyclerView rcv;
     private AppRecycleViewAdapter adapter;
@@ -40,7 +40,7 @@ public class MainActivity extends Activity implements AppRecycleViewAdapter.OnIt
     private AlertDialog passwordDialog;
     private AppInfo currentApp;
 
-    private static String passwordRegApp = "(.*settings$)|(.*rk$)";
+    private String passwordRegApp = PASSWORD_APP_PACKNAME;
 
     @Override
     protected void onDestroy() {
@@ -56,31 +56,53 @@ public class MainActivity extends Activity implements AppRecycleViewAdapter.OnIt
         rcv = findViewById(R.id.rcv);
         rcv.setLayoutManager(new GridLayoutManager(this, 4));
 
-        initAdapter(SHOW_APP_PACKAGE);
+        initAdapter();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAppUpdate(MessageEvent event) {
         if (event == MessageEvent.APP_UPDATE) {
-            initAdapter(SHOW_APP_PACKAGE);
+            initAdapter();
         }
     }
 
-    private void initAdapter(String reg) {
+    /**
+     * 初始化图标列表
+     */
+    private void initAdapter() {
+        List<AppInfo> appList;
+        if (ShapUtils.get(EK_MODE, false)) {
+            appList = AppUtils.getAppList(this, null);
+            AppInfo appInfo = new AppInfo(null, getResources().getDrawable(R.mipmap.list), ORIGINAL_LIST, null);
+            appList.add(appInfo);
+        } else {
+            appList = AppUtils.getAppList(this, SHOW_APP_PACKAGE);
+        }
+        appList.add(new AppInfo(null, getResources().getDrawable(R.mipmap.update), UPDATE_APP, null));
         if (adapter != null) {
-            adapter.initAppList(AppUtils.getAppList(this, reg));
+            adapter.initAppList(appList);
             return;
         }
-        adapter = new AppRecycleViewAdapter(AppUtils.getAppList(this, reg), this);
+        adapter = new AppRecycleViewAdapter(appList, this);
         rcv.setAdapter(adapter);
         adapter.setOnItemClickListener(this);
     }
 
     @Override
     public void onItemClick(AppInfo appInfo) {
+        if(ORIGINAL_LIST.equals(appInfo.getName())){ // 显示原app列表
+            passwordRegApp = PASSWORD_APP_PACKNAME;
+            ShapUtils.put(EK_MODE, false);
+            initAdapter();
+            return;
+        }
+        if(UPDATE_APP.equals(appInfo.getName())){ // 更新app
+            startActivity(new Intent(this,UpdateActivity.class));
+            return;
+        }
         this.currentApp = appInfo;
-        if(adapter.isEnableUninstall()){
-            startActivity(new Intent(Intent.ACTION_DELETE, Uri.fromParts("package",currentApp.getPackageName(),null)));
+        if (adapter.isEnableUninstall()) {
+            startActivity(new Intent(Intent.ACTION_DELETE, Uri.fromParts("package", currentApp.getPackageName(), null)));
             return;
         }
         if (passwordRegApp != null)
@@ -98,6 +120,9 @@ public class MainActivity extends Activity implements AppRecycleViewAdapter.OnIt
         AppUtils.launchApp(MainActivity.this, currentApp);
     }
 
+    /**
+     * 初始化密码输入框
+     */
     private void initDialogLayout() {
         ((EditText) passwordView.findViewById(R.id.et_setting_password)).setText("");
         ((EditText) passwordView.findViewById(R.id.et_setting_password)).setInputType(0x00000081);
@@ -105,6 +130,9 @@ public class MainActivity extends Activity implements AppRecycleViewAdapter.OnIt
         ((ImageView) passwordDialog.findViewById(R.id.iv_show_password)).setBackgroundResource(R.mipmap.show_pwd);
     }
 
+    /**
+     * 显示提示框密码
+     */
     private void dialogShowPwd() {
         passwordView.findViewById(R.id.iv_show_password).setOnClickListener(new View.OnClickListener() {
             private EditText editText;
@@ -125,6 +153,9 @@ public class MainActivity extends Activity implements AppRecycleViewAdapter.OnIt
         });
     }
 
+    /**
+     * 创建输入密码提示框
+     */
     private void createDialog() {
         passwordDialog = new AlertDialog.Builder(this)
                 .setView(passwordView)
@@ -138,7 +169,8 @@ public class MainActivity extends Activity implements AppRecycleViewAdapter.OnIt
                             AppUtils.launchApp(MainActivity.this, currentApp);
                         } else if (getString(R.string.ek_password).equals(password)) {
                             passwordRegApp = null;
-                            initAdapter(null);
+                            ShapUtils.put(EK_MODE, true);
+                            initAdapter();
                         } else {
                             Toast.makeText(MainActivity.this, R.string.dialog_pwd_error, Toast.LENGTH_LONG).show();
                         }
