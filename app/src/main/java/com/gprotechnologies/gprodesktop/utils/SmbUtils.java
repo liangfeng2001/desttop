@@ -1,5 +1,11 @@
 package com.gprotechnologies.gprodesktop.utils;
 
+import android.app.Activity;
+import android.content.Context;
+import android.util.Log;
+
+import com.gprotechnologies.gprodesktop.views.ProgressBarDialog;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -21,7 +27,12 @@ public class SmbUtils {
         return smbFile.listFiles();
     }
 
-    public static File downloadFile(SmbFile smbFile, String localDir) {
+    public static File downloadFile(Activity activity, SmbFile smbFile, String localDir) {
+        ProgressBarDialog progressBarDialog = new ProgressBarDialog(activity);
+        File localPath = new File(localDir);
+        if (!localPath.exists()) {
+            localPath.mkdirs();
+        }
         BufferedInputStream in = null;
         BufferedOutputStream out = null;
         File localFile = null;
@@ -30,10 +41,16 @@ public class SmbUtils {
             localFile = new File(localDir + File.separator + fileName);
             in = new BufferedInputStream(new SmbFileInputStream(smbFile));
             out = new BufferedOutputStream(new FileOutputStream(localFile));
+            int contentLength = smbFile.getContentLength();
+            int currentLength = 0;
+            int len;
             byte[] buffer = new byte[1024];
-            while (in.read(buffer) != -1) {
-                out.write(buffer);
+            while ((len = in.read(buffer)) != -1) {
+                out.write(buffer, 0, len);
+                out.flush();
                 buffer = new byte[1024];
+                currentLength += len;
+                progressBarDialog.setCurrentProgress((int) ((currentLength+.0f) / (contentLength+.0f) * 100));
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -60,6 +77,7 @@ public class SmbUtils {
                     e.printStackTrace();
                 }
             }
+            progressBarDialog.dismiss();
         }
         return localFile;
     }

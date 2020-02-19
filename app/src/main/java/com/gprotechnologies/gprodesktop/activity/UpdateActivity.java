@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.gprotechnologies.gprodesktop.consts.AppConst;
 import com.gprotechnologies.gprodesktop.utils.AppUtils;
 import com.gprotechnologies.gprodesktop.utils.ShapUtils;
 import com.gprotechnologies.gprodesktop.utils.SmbUtils;
+import com.gprotechnologies.gprodesktop.views.ProgressBarDialog;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -66,7 +68,7 @@ public class UpdateActivity extends AppCompatActivity implements AppUpdateListVi
             @Override
             public void onClick(View v) {
                 String ip = etRemoteIp.getText().toString();
-                if("".equals(ip)){
+                if ("".equals(ip)) {
                     Toast.makeText(UpdateActivity.this, getString(R.string.enter_ip), Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -102,8 +104,12 @@ public class UpdateActivity extends AppCompatActivity implements AppUpdateListVi
 
     @Override
     public void onClick(SmbFile smbFile) {
-        File cacheDir = getCacheDir();
-        File downloadFile = SmbUtils.downloadFile(smbFile, cacheDir.getAbsolutePath());
-        AppUtils.installApk(this, downloadFile);
+        new Thread(){
+            @Override
+            public void run() {
+                File downloadFile = SmbUtils.downloadFile(UpdateActivity.this,smbFile,Environment.getExternalStorageDirectory()+"/GproDesktop/");
+                AppUtils.installApk(UpdateActivity.this, downloadFile);
+            }
+        }.start();
     }
 }
