@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -21,11 +23,11 @@ import com.gprotechnologies.gprodesktop.consts.AppConst;
 import com.gprotechnologies.gprodesktop.utils.AppUtils;
 import com.gprotechnologies.gprodesktop.utils.ShapUtils;
 import com.gprotechnologies.gprodesktop.utils.SmbUtils;
-import com.gprotechnologies.gprodesktop.views.ProgressBarDialog;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
@@ -46,9 +48,9 @@ public class UpdateActivity extends AppCompatActivity implements AppUpdateListVi
         public void handleMessage(@NonNull Message msg) {
             switch (msg.what) {
                 case HANDLER_UPDATE_APP_LIST:
-                    SmbFile[] files = (SmbFile[]) msg.obj;
+                    List<SmbFile> files = (List<SmbFile>) msg.obj;
                     if (files != null) {
-                        adapter = new AppUpdateListViewAdapter(UpdateActivity.this, Arrays.asList(files), UpdateActivity.this);
+                        adapter = new AppUpdateListViewAdapter(UpdateActivity.this, files, UpdateActivity.this);
                         rcvAppList.setAdapter(adapter);
                     }
                     break;
@@ -80,6 +82,11 @@ public class UpdateActivity extends AppCompatActivity implements AppUpdateListVi
         getRemoteAppList(String.format(AppConst.SMB_URL, ShapUtils.get(AppConst.REMOTE_URL, AppConst.SMB_IP)));
     }
 
+    /**
+     * 获取smb文件列表
+     *
+     * @param remoteUrl
+     */
     private void getRemoteAppList(String remoteUrl) {
         new Thread() {
             @Override
@@ -96,18 +103,73 @@ public class UpdateActivity extends AppCompatActivity implements AppUpdateListVi
                         }
                     });
                 }
-                Message message = handler.obtainMessage(HANDLER_UPDATE_APP_LIST, files);
+                List<SmbFile> fileList = filterFileByVersion(files, remoteUrl);
+                Message message = handler.obtainMessage(HANDLER_UPDATE_APP_LIST, fileList);
                 handler.sendMessage(message);
             }
         }.start();
     }
 
+    /**
+     * 根据版本过滤
+     *
+     * @param files
+     * @param remoteUrl
+     * @return
+     */
+    private List<SmbFile> filterFileByVersion(SmbFile[] files, String remoteUrl) {
+        ArrayList<SmbFile> list = new ArrayList<>();
+        PackageManager pm = getPackageManager();
+        List<PackageInfo> ip = pm.getInstalledPackages(0);
+        for (PackageInfo packageInfo : ip) { // 遍历已经安装的应用包名
+            for (SmbFile file : files) { //遍历服务器上所有目录包名
+                try {
+                    if (file.isDirectory()) { //必须是目录
+                        String name = file.getName();
+                        String fileName = name.substring(0, name.length() - 1);
+                        String packageName = packageInfo.applicationInfo.packageName;
+                        if (packageName.equals(fileName)) { //匹配已安装应用包名和服务器文件包名
+                            SmbFile[] smbFiles = SmbUtils.getFiles(remoteUrl + name); // 获取目录里的所有应用文件
+                            for (int i = 0; i < smbFiles.length; i++) {
+                                String name1 = smbFiles[i].getName();
+                                String versionName = name1.substring(name1.indexOf("_v") + 2, name1.indexOf(".apk"));
+                                String[] version1 = versionName.split("\\.");
+                                String[] version2 = packageInfo.versionName.split("\\.");
+                                if (version1.length < version2.length) { // 版本号错误
+                                    continue;
+                                }
+                                for (int i1 = 0; i1 < version1.length; i1++) { // 配对版本号
+                                    if (i1 == version1.length - 1) { //最后一位
+                                        if (Integer.parseInt(version1[i1]) <= Integer.parseInt(version2[i1])) {
+                                            break;
+                                        }
+                                    } else {
+                                        if (Integer.parseInt(version1[i1]) <= Integer.parseInt(version2[i1])) {
+                                            continue;
+                                        }
+                                    }
+                                    list.add(smbFiles[i]);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                } catch (SmbException e) {
+                    e.printStackTrace();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return list;
+    }
+
     @Override
     public void onClick(SmbFile smbFile) {
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
-                File downloadFile = SmbUtils.downloadFile(UpdateActivity.this,smbFile,Environment.getExternalStorageDirectory()+"/GproDesktop/");
+                File downloadFile = SmbUtils.downloadFile(UpdateActivity.this, smbFile, Environment.getExternalStorageDirectory() + "/GproDesktop/");
                 AppUtils.installApk(UpdateActivity.this, downloadFile);
             }
         }.start();
