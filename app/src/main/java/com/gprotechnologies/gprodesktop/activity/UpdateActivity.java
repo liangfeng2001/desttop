@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,6 +28,9 @@ import com.gprotechnologies.gprodesktop.utils.SmbUtils;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import jcifs.smb.SmbException;
@@ -125,32 +129,31 @@ public class UpdateActivity extends AppCompatActivity implements AppUpdateListVi
             for (SmbFile file : files) { //遍历服务器上所有目录包名
                 try {
                     if (file.isDirectory()) { //必须是目录
-                        String name = file.getName();
-                        String fileName = name.substring(0, name.length() - 1);
-                        String packageName = packageInfo.applicationInfo.packageName;
-                        if (packageName.equals(fileName)) { //匹配已安装应用包名和服务器文件包名
-                            SmbFile[] smbFiles = SmbUtils.getFiles(remoteUrl + name); // 获取目录里的所有应用文件
-                            for (int i = 0; i < smbFiles.length; i++) {
-                                String name1 = smbFiles[i].getName();
-                                String versionName = name1.substring(name1.indexOf("_v") + 2, name1.indexOf(".apk"));
-                                String[] version1 = versionName.split("\\.");
-                                String[] version2 = packageInfo.versionName.split("\\.");
-                                if (version1.length < version2.length) { // 版本号错误
-                                    continue;
-                                }
-                                for (int i1 = 0; i1 < version1.length; i1++) { // 配对版本号
-                                    if (i1 == version1.length - 1) { //最后一位
-                                        if (Integer.parseInt(version1[i1]) <= Integer.parseInt(version2[i1])) {
-                                            break;
-                                        }
-                                    } else {
-                                        if (Integer.parseInt(version1[i1]) <= Integer.parseInt(version2[i1])) {
-                                            continue;
-                                        }
+                        String remotePackageName = file.getName();
+                        String fileName = remotePackageName.substring(0, remotePackageName.length() - 1);
+                        String currentPackageName = packageInfo.applicationInfo.packageName;
+                        if (currentPackageName.equals(fileName)) { //匹配已安装应用包名和服务器文件包名
+                            SmbFile[] smbFiles = SmbUtils.getFiles(remoteUrl + remotePackageName); // 获取包名目录里的所有应用文件
+                            SmbFile smbFile = sortByVersion(smbFiles).get(0);
+                            String name1 = smbFile.getName();
+                            String versionName = name1.substring(name1.indexOf("_v") + 2, name1.indexOf(".apk"));
+                            String[] version1 = versionName.split("\\.");
+                            String[] version2 = packageInfo.versionName.split("\\.");
+                            if (version1.length < version2.length) { // 版本号错误
+                                continue;
+                            }
+                            for (int i1 = 0; i1 < version1.length; i1++) { // 配对版本号
+                                if (i1 == version1.length - 1) { //最后一位
+                                    if (Integer.parseInt(version1[i1]) <= Integer.parseInt(version2[i1])) {
+                                        break;
                                     }
-                                    list.add(smbFiles[i]);
-                                    break;
+                                } else {
+                                    if (Integer.parseInt(version1[i1]) <= Integer.parseInt(version2[i1])) {
+                                        continue;
+                                    }
                                 }
+                                list.add(smbFile);
+                                break;
                             }
                         }
                     }
@@ -162,6 +165,34 @@ public class UpdateActivity extends AppCompatActivity implements AppUpdateListVi
             }
         }
         return list;
+    }
+
+
+    private ArrayList<SmbFile> sortByVersion(SmbFile[] smbFiles) {
+        ArrayList<SmbFile> files = new ArrayList<>(Arrays.asList(smbFiles));
+        Collections.sort(files, new Comparator<SmbFile>() {
+            @Override
+            public int compare(SmbFile o1, SmbFile o2) {
+                String name1 = o1.getName();
+                String name2 = o2.getName();
+                String[] version1 = name1.substring(name1.indexOf("_v") + 2, name1.indexOf(".apk")).split("\\.");
+                String[] version2 = name2.substring(name2.indexOf("_v") + 2, name2.indexOf(".apk")).split("\\.");
+                if (version1.length != version2.length) return 0;
+                for (int i1 = 0; i1 < version1.length; i1++) { // 配对版本号
+                    if (i1 == version1.length - 1) { //最后一位
+                        return -(Integer.parseInt(version1[i1]) - Integer.parseInt(version2[i1]));
+                    } else {
+                        if (Integer.parseInt(version1[i1]) <= Integer.parseInt(version2[i1])) {
+                            continue;
+                        } else {
+                            return 1;
+                        }
+                    }
+                }
+                return 0;
+            }
+        });
+        return files;
     }
 
     @Override
