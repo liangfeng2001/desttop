@@ -105,7 +105,7 @@ public class MainActivity extends Activity implements AppRecycleViewAdapter.OnIt
             return;
         }
         if (passwordRegApp != null)
-            if (currentApp.getPackageName().matches(passwordRegApp)) {
+            if (currentApp.getPackageName().matches(passwordRegApp) && !ShapUtils.get(EK_MODE,true)) {
                 if (passwordView == null)
                     passwordView = LayoutInflater.from(this).inflate(R.layout.dialog_password, null);
                 if (passwordDialog == null) {
