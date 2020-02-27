@@ -168,6 +168,12 @@ public class UpdateActivity extends AppCompatActivity implements AppUpdateListVi
     }
 
 
+    /**
+     * 根绝文件版本号进行排序
+     * 格式： _v1.0.0.apk
+     * @param smbFiles
+     * @return
+     */
     private ArrayList<SmbFile> sortByVersion(SmbFile[] smbFiles) {
         ArrayList<SmbFile> files = new ArrayList<>(Arrays.asList(smbFiles));
         Collections.sort(files, new Comparator<SmbFile>() {
@@ -185,7 +191,7 @@ public class UpdateActivity extends AppCompatActivity implements AppUpdateListVi
                         if (Integer.parseInt(version1[i1]) <= Integer.parseInt(version2[i1])) {
                             continue;
                         } else {
-                            return 1;
+                            return -1;
                         }
                     }
                 }

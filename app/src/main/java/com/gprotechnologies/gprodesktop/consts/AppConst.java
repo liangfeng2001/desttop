@@ -11,7 +11,7 @@ public class AppConst {
     public static final String UPDATE_APP = "Update App";
 
     public static final String SMB_URL = "smb://%s/GPROapk/";
-    public static final String SMB_IP = "192.168.10.110";
+    public static final String SMB_IP = "192.168.10.101";
     public static final String REMOTE_URL = "remoteUrl";
 
 }

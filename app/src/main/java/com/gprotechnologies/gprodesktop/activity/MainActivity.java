@@ -55,7 +55,6 @@ public class MainActivity extends Activity implements AppRecycleViewAdapter.OnIt
         EventBus.getDefault().register(this);
         rcv = findViewById(R.id.rcv);
         rcv.setLayoutManager(new GridLayoutManager(this, 4));
-
         initAdapter();
     }
 
@@ -71,7 +70,7 @@ public class MainActivity extends Activity implements AppRecycleViewAdapter.OnIt
      */
     private void initAdapter() {
         List<AppInfo> appList;
-        if (ShapUtils.get(EK_MODE, false)) {
+        if (ShapUtils.get(EK_MODE, true)) {
             appList = AppUtils.getAppList(this, null);
             AppInfo appInfo = new AppInfo(null, getResources().getDrawable(R.mipmap.list), ORIGINAL_LIST, null);
             appList.add(appInfo);
