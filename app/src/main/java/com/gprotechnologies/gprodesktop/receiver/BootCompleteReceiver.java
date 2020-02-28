@@ -16,10 +16,9 @@ public class BootCompleteReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if ("android.intent.action.BOOT_COMPLETED".equals(intent.getAction())) {
+        if ("android.intent.action.BOOT_COMPLETED".equals(intent.getAction()) || "android.intent.action.ACTION_SHUTDOWN".equals(intent.getAction())) {
             ShapUtils.put(EK_MODE, false);
             EventBus.getDefault().post(MessageEvent.APP_UPDATE);
         }
-        Log.e("ac", "onReceive: "+intent.getAction() );
     }
 }
