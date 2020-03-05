@@ -7,13 +7,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -28,12 +33,18 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import static com.gprotechnologies.gprodesktop.consts.AppConst.*;
 
 public class MainActivity extends Activity implements AppRecycleViewAdapter.OnItemCLickListener {
 
+    public static final String GPRO_DESKTOP = "/GproDesktop";
+    private FrameLayout flBackGroup;
     private RecyclerView rcv;
     private AppRecycleViewAdapter adapter;
     private View passwordView;
@@ -53,9 +64,32 @@ public class MainActivity extends Activity implements AppRecycleViewAdapter.OnIt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         EventBus.getDefault().register(this);
+        flBackGroup = findViewById(R.id.fl_backgroup);
         rcv = findViewById(R.id.rcv);
         rcv.setLayoutManager(new GridLayoutManager(this, 4));
         initAdapter();
+        loadBgDesktop();
+    }
+
+    /**
+     * 加载背景
+     */
+    private void loadBgDesktop() {
+        File externalStorageDirectory = Environment.getExternalStorageDirectory();
+        File file = new File(externalStorageDirectory + GPRO_DESKTOP);
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        String bgFilename = null;
+        for (String fileName : file.list()) {
+            if (fileName.matches("(bg_desktop\\.)(jpg|png|jpeg)")) {
+                bgFilename = "/" + fileName;
+                break;
+            }
+        }
+        if (bgFilename != null) {
+            flBackGroup.setBackground(Drawable.createFromPath(file.getAbsolutePath() + bgFilename));
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -89,14 +123,14 @@ public class MainActivity extends Activity implements AppRecycleViewAdapter.OnIt
 
     @Override
     public void onItemClick(AppInfo appInfo) {
-        if(ORIGINAL_LIST.equals(appInfo.getName())){ // 显示原app列表
+        if (ORIGINAL_LIST.equals(appInfo.getName())) { // 显示原app列表
             passwordRegApp = PASSWORD_APP_PACKNAME;
             ShapUtils.put(EK_MODE, false);
             initAdapter();
             return;
         }
-        if(UPDATE_APP.equals(appInfo.getName())){ // 更新app
-            startActivity(new Intent(this,UpdateActivity.class));
+        if (UPDATE_APP.equals(appInfo.getName())) { // 更新app
+            startActivity(new Intent(this, UpdateActivity.class));
             return;
         }
         this.currentApp = appInfo;
@@ -105,7 +139,7 @@ public class MainActivity extends Activity implements AppRecycleViewAdapter.OnIt
             return;
         }
         if (passwordRegApp != null)
-            if (currentApp.getPackageName().matches(passwordRegApp) && !ShapUtils.get(EK_MODE,true)) {
+            if (currentApp.getPackageName().matches(passwordRegApp) && !ShapUtils.get(EK_MODE, true)) {
                 if (passwordView == null)
                     passwordView = LayoutInflater.from(this).inflate(R.layout.dialog_password, null);
                 if (passwordDialog == null) {
