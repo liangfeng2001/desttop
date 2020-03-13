@@ -8,4 +8,5 @@
     <string name="dialog_pwd_error">password error</string>
     <string name="getremotefile">getRemoteFile</string>
     <string name="enter_ip">Please enter ip</string>
+    <string name="ip_address">IP Address: </string>
 </resources>

@@ -92,6 +92,10 @@ public class MainActivity extends Activity implements AppRecycleViewAdapter.OnIt
         }
     }
 
+    /**
+     * App安装卸载后更新桌面
+     * @param event
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAppUpdate(MessageEvent event) {
         if (event == MessageEvent.APP_UPDATE) {
@@ -104,6 +108,7 @@ public class MainActivity extends Activity implements AppRecycleViewAdapter.OnIt
      */
     private void initAdapter() {
         List<AppInfo> appList;
+        // 判断是否工厂模式
         if (ShapUtils.get(EK_MODE, true)) {
             appList = AppUtils.getAppList(this, null);
             AppInfo appInfo = new AppInfo(null, getResources().getDrawable(R.mipmap.list), ORIGINAL_LIST, null);
@@ -111,16 +116,22 @@ public class MainActivity extends Activity implements AppRecycleViewAdapter.OnIt
         } else {
             appList = AppUtils.getAppList(this, SHOW_APP_PACKAGE);
         }
+        // 添加更新图标
         appList.add(new AppInfo(null, getResources().getDrawable(R.mipmap.update), UPDATE_APP, null));
         if (adapter != null) {
             adapter.initAppList(appList);
             return;
         }
+        // 设置adapter
         adapter = new AppRecycleViewAdapter(appList, this);
         rcv.setAdapter(adapter);
         adapter.setOnItemClickListener(this);
     }
 
+    /**
+     * 图标点击
+     * @param appInfo
+     */
     @Override
     public void onItemClick(AppInfo appInfo) {
         if (ORIGINAL_LIST.equals(appInfo.getName())) { // 显示原app列表

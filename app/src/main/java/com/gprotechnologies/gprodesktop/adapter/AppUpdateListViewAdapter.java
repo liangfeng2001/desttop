@@ -27,6 +27,11 @@ public class AppUpdateListViewAdapter extends RecyclerView.Adapter<AppUpdateList
         this.onAppNameClick = onAppNameClick;
     }
 
+    public void setData(List<SmbFile> data) {
+        this.data = data;
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

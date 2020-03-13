@@ -4,17 +4,20 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageView
-        android:background="@android:color/darker_gray"
-        android:layout_width="match_parent"
-        android:layout_height="1dp" />
+
 
     <TextView
+        android:gravity="center"
         android:padding="10dp"
         android:textColor="@android:color/black"
         android:id="@+id/tv_app_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:background="@drawable/shape_tv_update_app_name"
         android:textSize="28sp" />
 
 </LinearLayout>

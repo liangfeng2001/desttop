@@ -12,26 +12,53 @@
         android:id="@+id/rcv_app_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1" />
+        android:layout_weight="2" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:gravity="center"
+        android:layout_marginTop="50dp"
+        android:layout_weight="3"
+        android:layout_marginRight="10dp"
+        android:gravity="right"
         android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/et_remoteIp"
-            android:gravity="center"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ip_address"
+                android:textSize="26sp" />
+
+            <EditText
+                android:id="@+id/et_remoteIp"
+                android:padding="5dp"
+                android:background="@drawable/shape_et_ip_address"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="26sp" />
+        </LinearLayout>
+
 
         <Button
             android:id="@+id/btn_get_remote_file"
             android:layout_width="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:layout_height="wrap_content"
-            android:text="@string/getremotefile" />
+            android:layout_margin="10dp"
+            android:background="@drawable/shape_btn_get_file"
+            android:text="@string/getremotefile"
+            android:textSize="26sp" />
 
     </LinearLayout>
 

@@ -54,8 +54,12 @@ public class UpdateActivity extends AppCompatActivity implements AppUpdateListVi
                 case HANDLER_UPDATE_APP_LIST:
                     List<SmbFile> files = (List<SmbFile>) msg.obj;
                     if (files != null) {
-                        adapter = new AppUpdateListViewAdapter(UpdateActivity.this, files, UpdateActivity.this);
-                        rcvAppList.setAdapter(adapter);
+                        if (adapter == null) {
+                            adapter = new AppUpdateListViewAdapter(UpdateActivity.this, files, UpdateActivity.this);
+                            rcvAppList.setAdapter(adapter);
+                        }else {
+                            adapter.setData(files);
+                        }
                     }
                     break;
             }
@@ -171,6 +175,7 @@ public class UpdateActivity extends AppCompatActivity implements AppUpdateListVi
     /**
      * 根绝文件版本号进行排序
      * 格式： _v1.0.0.apk
+     *
      * @param smbFiles
      * @return
      */
