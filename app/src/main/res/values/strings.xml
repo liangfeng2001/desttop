@@ -6,7 +6,7 @@
     <string name="dialog_btn_cancel">cancel</string>
     <string name="dialog_btn_ok">ok</string>
     <string name="dialog_pwd_error">password error</string>
-    <string name="getremotefile">getRemoteFile</string>
+    <string name="getremotefile">GetLatestUpdate</string>
     <string name="enter_ip">Please enter ip</string>
     <string name="ip_address">IP Address: </string>
 </resources>
