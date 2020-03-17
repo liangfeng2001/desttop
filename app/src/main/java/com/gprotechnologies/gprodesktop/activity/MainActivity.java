@@ -128,6 +128,8 @@ public class MainActivity extends Activity implements AppRecycleViewAdapter.OnIt
         adapter.setOnItemClickListener(this);
     }
 
+
+
     /**
      * 图标点击
      * @param appInfo
@@ -163,6 +165,8 @@ public class MainActivity extends Activity implements AppRecycleViewAdapter.OnIt
             }
         AppUtils.launchApp(MainActivity.this, currentApp);
     }
+
+
 
     /**
      * 初始化密码输入框

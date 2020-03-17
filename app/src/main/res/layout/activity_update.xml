@@ -17,7 +17,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="10dp"
         android:layout_weight="3"
         android:layout_marginRight="10dp"
         android:gravity="right"
@@ -25,7 +25,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:orientation="horizontal">
 
             <TextView
@@ -36,27 +36,26 @@
 
             <EditText
                 android:id="@+id/et_remoteIp"
-                android:padding="5dp"
+                android:padding="10dp"
                 android:background="@drawable/shape_et_ip_address"
-                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_width="0dp"
                 android:layout_weight="1"
-                android:textSize="26sp" />
+                android:textSize="28sp" />
         </LinearLayout>
 
 
         <Button
             android:id="@+id/btn_get_remote_file"
             android:layout_width="wrap_content"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:padding="10dp"
             android:background="@drawable/shape_btn_get_file"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="5dp"
             android:text="@string/getremotefile"
-            android:textSize="26sp" />
+            android:textSize="28sp" />
 
     </LinearLayout>
 
