@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.gprotechnologies.gprodesktop.activity.MainActivity;
 import com.gprotechnologies.gprodesktop.R;
 import com.gprotechnologies.gprodesktop.bean.AppInfo;
+import com.gprotechnologies.gprodesktop.utils.LogUtil;
 
 import java.util.List;
 
@@ -63,8 +64,9 @@ public class AppRecycleViewAdapter extends RecyclerView.Adapter<AppRecycleViewAd
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                enableUninstall = !enableUninstall;
-                notifyDataSetChanged();
+           //     enableUninstall = !enableUninstall;
+             //   notifyDataSetChanged();
+                LogUtil.d("Enter:: initStartUpData");
                 return true;
             }
         });
