@@ -10,6 +10,7 @@ public class AppConst {
     public static final String PASSWORD_APP_PACKNAME = "(.*settings$)|(.*rk$)";
     public static final String UPDATE_APP = "Update";
 
+   // public static final String SMB_URL = "http://%s/GPROImage/";  // GPROapk  test
     public static final String SMB_URL = "smb://%s/GPROapk/";
     public static final String SMB_IP = "192.168.10.100";
     public static final String REMOTE_URL = "remoteUrl";

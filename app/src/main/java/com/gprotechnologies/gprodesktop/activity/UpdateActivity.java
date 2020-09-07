@@ -22,6 +22,7 @@ import com.gprotechnologies.gprodesktop.R;
 import com.gprotechnologies.gprodesktop.adapter.AppUpdateListViewAdapter;
 import com.gprotechnologies.gprodesktop.consts.AppConst;
 import com.gprotechnologies.gprodesktop.utils.AppUtils;
+import com.gprotechnologies.gprodesktop.utils.LogUtil;
 import com.gprotechnologies.gprodesktop.utils.ShapUtils;
 import com.gprotechnologies.gprodesktop.utils.SmbUtils;
 
@@ -108,12 +109,14 @@ public class UpdateActivity extends AppCompatActivity implements AppUpdateListVi
                         @Override
                         public void run() {
                             Toast.makeText(UpdateActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                           // LogUtil.d("THE failed  is "+e.getMessage());
                         }
                     });
                 }
                 List<SmbFile> fileList = filterFileByVersion(files, remoteUrl);
                 Message message = handler.obtainMessage(HANDLER_UPDATE_APP_LIST, fileList);
                 handler.sendMessage(message);
+                LogUtil.d("THE remoute is "+remoteUrl);
             }
         }.start();
     }
@@ -143,6 +146,8 @@ public class UpdateActivity extends AppCompatActivity implements AppUpdateListVi
                             String versionName = name1.substring(name1.indexOf("_v") + 2, name1.indexOf(".apk"));
                             String[] version1 = versionName.split("\\.");
                             String[] version2 = packageInfo.versionName.split("\\.");
+                          //  LogUtil.d("the new version name is"+versionName);
+                          //  LogUtil.d("the old version name is"+packageInfo.versionName);
                             if (version1.length < version2.length) { // 版本号错误
                                 continue;
                             }
@@ -153,6 +158,7 @@ public class UpdateActivity extends AppCompatActivity implements AppUpdateListVi
                                     }
                                 } else {
                                     if (Integer.parseInt(version1[i1]) <= Integer.parseInt(version2[i1])) {
+                                        LogUtil.d("the version1[i1] is "+Integer.parseInt(version1[i1])+"; the index is= "+i1+"the version2[i1] is "+Integer.parseInt(version2[i1]));
                                         continue;
                                     }
                                 }
@@ -181,28 +187,58 @@ public class UpdateActivity extends AppCompatActivity implements AppUpdateListVi
      */
     private ArrayList<SmbFile> sortByVersion(SmbFile[] smbFiles) {
         ArrayList<SmbFile> files = new ArrayList<>(Arrays.asList(smbFiles));
-        Collections.sort(files, new Comparator<SmbFile>() {
+        int len=files .size();
+        SmbFile smbFileOld=files.get(0);
+        for(int j=0;j<len;j++){
+            if(j!=0){
+                SmbFile smbFileNew=files .get(j);
+                String name0=smbFileOld.getName();
+                String nameX=smbFileNew.getName();
+                String[] version0 = name0.substring(name0.indexOf("_v") + 2, name0.indexOf(".apk")).split("\\.");
+                String[] versionX = nameX.substring(nameX.indexOf("_v") + 2, nameX.indexOf(".apk")).split("\\.");
+                for (int i1 = 0; i1 < version0.length; i1++){
+                    if (Integer.parseInt(version0[i1]) < Integer.parseInt(versionX[i1])) {
+                        LogUtil.d("first version 0 is "+version0[i1]+" ; the version x is "+versionX[i1]);
+                        files.set(0, smbFileNew);  // 大于第一个数，放置到第一位。
+                        smbFileOld=files.get(0);
+                        LogUtil.d("the smbFileOld is "+smbFileNew.getName());
+                        continue;
+                    } else if(Integer.parseInt(version0[i1]) > Integer.parseInt(versionX[i1])){
+                        LogUtil.d("second version 0 is "+version0[i1]+" ; the version x is "+versionX[i1]);
+                        break;
+
+                    }else {  // 等于
+
+                    }
+                }
+            }
+
+        }
+/*        Collections.sort(files, new Comparator<SmbFile>() {
             @Override
             public int compare(SmbFile o1, SmbFile o2) {
                 String name1 = o1.getName();
                 String name2 = o2.getName();
                 String[] version1 = name1.substring(name1.indexOf("_v") + 2, name1.indexOf(".apk")).split("\\.");
                 String[] version2 = name2.substring(name2.indexOf("_v") + 2, name2.indexOf(".apk")).split("\\.");
+                LogUtil.d("name1 is "+ name1+" ; name 2 is "+name2);
                 if (version1.length != version2.length) return 0;
                 for (int i1 = 0; i1 < version1.length; i1++) { // 配对版本号
-                    if (i1 == version1.length - 1) { //最后一位
+                    *//*if (i1 == version1.length - 1) { //最后一位
                         return -(Integer.parseInt(version1[i1]) - Integer.parseInt(version2[i1]));
-                    } else {
+                    } else *//*{
                         if (Integer.parseInt(version1[i1]) <= Integer.parseInt(version2[i1])) {
+                            LogUtil.d("first version 1 is "+version1[i1]+" ; the version 2 is "+version2[i1]);
                             continue;
                         } else {
+                            LogUtil.d("second version 1 is "+version1[i1]+" ; the version 2 is "+version2[i1]);
                             return -1;
                         }
                     }
                 }
                 return 0;
             }
-        });
+        });*/
         return files;
     }
 
